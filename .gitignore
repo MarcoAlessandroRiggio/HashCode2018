@@ -23,3 +23,9 @@ hs_err_pid*
 
 # Intellij files
 .idea/
+
+# Compiled file
+out/
+
+# OutPut file
+output/
