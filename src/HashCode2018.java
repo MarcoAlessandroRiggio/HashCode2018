@@ -16,8 +16,8 @@ import static java.util.Arrays.*;
 
 public class HashCode2018 {
 
-	private final static String inputFile = "C:\\Users\\Oran\\Downloads\\e_high_bonus.in";
-	private final static String outputFile = "C:\\Users\\Oran\\Documents\\Hashcode\\e_high_bonus.out";
+	private final static String inputFile = System.getProperty("user.dir") + "\\resources\\e_high_bonus.in";
+	private final static String outputFile = System.getProperty("user.dir") + "\\output\\e_high_bonus.out";
 
 	public static void main(String[] args) {
 		Configuration.readConfiguration(inputFile);
