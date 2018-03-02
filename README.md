@@ -6,4 +6,4 @@ the Middle East and Africa. You pick your team and programming language, we pick
 
 The code present in this repo is wrote in team, each contributor is equaly owner.
 
-Authors: Marco Riggio and Oran Bar
+Authors: [Marco Riggio](https://github.com/MarcoAlessandroRiggio) and [Oran Bar](https://github.com/OranBar)
