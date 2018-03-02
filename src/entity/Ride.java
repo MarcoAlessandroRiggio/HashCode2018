@@ -37,4 +37,8 @@ public class Ride {
 	public List<Point> getPoints() { return points; }
 
 	public int getStartTime() { return startTime; }
+
+	public int getEndTime() {
+		return endTime;
+	}
 }

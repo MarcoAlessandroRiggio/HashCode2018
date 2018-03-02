@@ -20,7 +20,7 @@ public class Configuration {
 	private Integer steps;
 	private List<Ride> rides;
 
-	public static Configuration getConfiguration() {
+	public static Configuration get() {
 		if(configuration == null)
 			configuration = new Configuration();
 		return configuration;
