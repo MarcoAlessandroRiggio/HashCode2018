@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 
 public class TaxiSolver {
 
 	public String theOranAlgorithm(){
-		Configuration configuration = Configuration.getConfiguration();
+		Configuration configuration = Configuration.get();
 		List<Ride> rides = new ArrayList<>(configuration.getRides());
 
 		final ArrayList<Taxi> taxis = new ArrayList<>();
@@ -29,9 +30,11 @@ public class TaxiSolver {
 			
 			if(rides.isEmpty()) { break; } //Let's compromise
 
+			//Eliminate rides that have expired!
+			List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() < currStep).collect(Collectors.toList());
 			
 			taxis.stream().filter(e -> !e.IsBusy()).forEach(t->{
-				Ride chosenRide = ChooseNextRide(t, rides, currStep);
+				Ride chosenRide = ChooseNextRide(t, availableRides, currStep);
 				if(chosenRide != null) {
 					t.setNextTarget( chosenRide );
 				}

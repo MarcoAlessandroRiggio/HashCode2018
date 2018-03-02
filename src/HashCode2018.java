@@ -33,7 +33,7 @@ public class HashCode2018 {
 
 			Configuration.readConfiguration(inputFile);
 			TaxiSolver solver = new TaxiSolver();
-			String result = solver.IterativeSolving();
+			String result = solver.theOranAlgorithm();
 			try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputFile))) {
 				writer.write(result);
 			} catch (IOException e) { e.printStackTrace(); }
