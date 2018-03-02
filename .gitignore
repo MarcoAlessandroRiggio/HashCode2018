@@ -23,6 +23,7 @@ hs_err_pid*
 
 # Intellij files
 .idea/
+*.iml
 
 # Compiled file
 out/

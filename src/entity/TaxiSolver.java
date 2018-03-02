@@ -8,8 +8,8 @@ import java.util.NoSuchElementException;
 
 public class TaxiSolver {
 
-	public String IterativeSolving(){
-		Configuration configuration = Configuration.get();
+	public String theOranAlgorithm(){
+		Configuration configuration = Configuration.getConfiguration();
 		List<Ride> rides = new ArrayList<>(configuration.getRides());
 
 		final ArrayList<Taxi> taxis = new ArrayList<>();
