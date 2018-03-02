@@ -15,6 +15,6 @@ public class Point {
 	public Integer getY() { return y; }
 	
 	public int getDistance(Point p) {
-		return Math.abs(x-p.x) + Math.abs(y-p.y);
+		return Math.abs(x - p.getX()) + Math.abs(y - p.getY());
 	}
 }
