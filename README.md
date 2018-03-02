@@ -9,7 +9,7 @@ In [resources](/resources)you can also find the official dataSet.
 In [src](/src) yuo can find an idea of "solution".
 
 Everything is based roundabout theOranAlgorithm: the most amazing algorithm I've seen.
-I can't explain what it does, it's too much for me, maybe one day [Pub](https://github.com/OranBar) (I usually call Oran Pub)
+I can't explain what it does, it's too much for me, maybe one day [Pub](https://github.com/OranBar) (I usually call him Pub)
 he'll decide to explain it, we will discover it only by living. 
 
 
