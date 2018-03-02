@@ -9,34 +9,38 @@ import java.util.stream.Collectors;
 
 public class TaxiSolver {
 
-	public String theOranAlgorithm(){
+	public String theOranAlgorithm() {
 		Configuration configuration = Configuration.get();
 		List<Ride> rides = new ArrayList<>(configuration.getRides());
 
 		final ArrayList<Taxi> taxis = new ArrayList<>();
-		for (int i = 0; i < configuration.getVehicles(); i++) { taxis.add(new Taxi()); }
+		for (int i = 0; i < configuration.getVehicles(); i++) {
+			taxis.add(new Taxi());
+		}
 
 		//Start of simulation
-		for(int i = 0; i < configuration.getSteps(); i++){
+		for (int i = 0; i < configuration.getSteps(); i++) {
 			int currStep = i;
-			for(Taxi t : taxis) {
-				if(t.getStepsUntilRideDone() == 0) {
+			for (Taxi t : taxis) {
+				if (t.getStepsUntilRideDone() == 0) {
 					t.setCurrentPosition(t.getTarget());
 				}
-				if(t.IsBusy()) {
+				if (t.IsBusy()) {
 					t.decreaseStepsUntilRideDone();
 				}
 			}
-			
-			if(rides.isEmpty()) { break; } //Let's compromise
+
+			if (rides.isEmpty()) {
+				break;
+			} //Let's compromise
 
 			//Eliminate rides that have expired!
 			List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() < currStep).collect(Collectors.toList());
-			
-			taxis.stream().filter(e -> !e.IsBusy()).forEach(t->{
+
+			taxis.stream().filter(e -> !e.IsBusy()).forEach(t -> {
 				Ride chosenRide = ChooseNextRide(t, availableRides, currStep);
-				if(chosenRide != null) {
-					t.setNextTarget( chosenRide );
+				if (chosenRide != null) {
+					t.setNextTarget(chosenRide);
 				}
 			});
 		}
@@ -55,7 +59,7 @@ public class TaxiSolver {
 					//Weed out the ride that can't be made to the destination in time.
 					.filter(r -> canRideBeMadeInTime(taxi, r, currStep))
 					.findFirst().get();
-		}catch(NoSuchElementException exception) {
+		} catch (NoSuchElementException exception) {
 			return null;
 		}
 
@@ -66,7 +70,7 @@ public class TaxiSolver {
 	private double getRideScore(Taxi taxi, Ride ride, int currStep) {
 		double result = 0;
 		int distanceToRideStart = taxi.getCurrentPosition().getDistance(ride.getStartPosition());
-		if(currStep + distanceToRideStart < ride.getStartTime()) {
+		if (currStep + distanceToRideStart < ride.getStartTime()) {
 			//We can get the bonus
 			result += Configuration.get().getBonus();
 		}
@@ -88,9 +92,9 @@ public class TaxiSolver {
 		return result;
 	}
 
-	private String generateFormattedResult(List<Taxi> taxis){
+	private String generateFormattedResult(List<Taxi> taxis) {
 		StringBuilder result = new StringBuilder();
-		for(Taxi taxi : taxis) {
+		for (Taxi taxi : taxis) {
 			result.append(taxi.toString()).append("\n");
 		}
 		return result.toString();
