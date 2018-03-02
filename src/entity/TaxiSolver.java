@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparingDouble;
+
 
 public class TaxiSolver {
 
 	public String theOranAlgorithm() {
-		Configuration configuration = Configuration.get();
-		List<Ride> rides = new ArrayList<>(configuration.getRides());
+		final Configuration configuration = Configuration.get();
+		final List<Ride> rides = new ArrayList<>(configuration.getRides());
 
 		final ArrayList<Taxi> taxis = new ArrayList<>();
-		for (int i = 0; i < configuration.getVehicles(); i++) {
-			taxis.add(new Taxi());
-		}
+		for (int i = 0; i < configuration.getVehicles(); i++) taxis.add(new Taxi());
 
 		//Start of simulation
 		for (int i = 0; i < configuration.getSteps(); i++) {
@@ -30,12 +30,10 @@ public class TaxiSolver {
 				}
 			}
 
-			if (rides.isEmpty()) {
-				break;
-			} //Let's compromise
+			if (rides.isEmpty()) break; //Let's compromise
 
 			//Eliminate rides that have expired!
-			List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() < currStep).collect(Collectors.toList());
+			final List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() < currStep).collect(Collectors.toList());
 
 			taxis.stream().filter(e -> !e.IsBusy()).forEach(t -> {
 				Ride chosenRide = ChooseNextRide(t, availableRides, currStep);
@@ -55,13 +53,11 @@ public class TaxiSolver {
 			newTargetRide = rides
 					.stream()
 					//Sort by score
-					.sorted(Comparator.comparingDouble(r -> getRideScore(taxi, r, currStep)))
+					.sorted(comparingDouble(r -> getRideScore(taxi, r, currStep)))
 					//Weed out the ride that can't be made to the destination in time.
 					.filter(r -> canRideBeMadeInTime(taxi, r, currStep))
 					.findFirst().get();
-		} catch (NoSuchElementException exception) {
-			return null;
-		}
+		} catch (NoSuchElementException exception) { return null; }
 
 		rides.remove(newTargetRide);
 		return newTargetRide;
@@ -85,12 +81,9 @@ public class TaxiSolver {
 		int rideBeginTime = (etaDestination < r.getStartTime()) ? r.getStartTime() : etaDestination;
 		int rideDuration = r.getStartPosition().getDistance(r.getEndPosition());
 
-		boolean result = rideBeginTime + rideDuration < Configuration.get().getSteps()
-				&&
-				rideBeginTime + rideDuration <= r.getEndTime();
-
-		return result;
-	}
+		return rideBeginTime + rideDuration < Configuration.get().getSteps()
+				&& rideBeginTime + rideDuration <= r.getEndTime();
+		}
 
 	private String generateFormattedResult(List<Taxi> taxis) {
 		StringBuilder result = new StringBuilder();
