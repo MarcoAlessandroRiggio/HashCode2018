@@ -13,20 +13,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.*;
-
 public class HashCode2018 {
 
-	private final static String inputFile = System.getProperty("user.dir") + "\\resources\\e_high_bonus.in";
-	private final static String outputFile = System.getProperty("user.dir") + "\\output\\e_high_bonus.out";
+	private final static String[] fileNames = new String[] { "\\output\\e_high_bonus" }
 
 	public static void main(String[] args) {
-		Configuration.readConfiguration(inputFile);
-		TaxiSolver solver = new TaxiSolver();
-		String result = solver.IterativeSolving();
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputFile ))) {
-			writer.write(result);
-		} catch (IOException e) { e.printStackTrace(); }
+
+		for(String inputFile in fileNames){
+			String inputFile = System.getProperty("user.dir") + inputFile + ".in";
+			String outputFile = System.getProperty("user.dir") + inputFile + ".out";
+
+			Configuration.readConfiguration(System.getProperty("user.dir") + inputFile + ".in");
+			TaxiSolver solver = new TaxiSolver();
+			String result = solver.IterativeSolving();
+			try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(System.getProperty("user.dir") + inputFile + ".out" ))) {
+				writer.write(result);
+			} catch (IOException e) { e.printStackTrace(); }
+		}
 	}
-
 }
-
