@@ -1,7 +1,6 @@
 package entity;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Comparator.comparingDouble;
@@ -9,20 +8,16 @@ import static java.util.Comparator.comparingDouble;
 
 public class TaxiSolver {
 
-	ArrayList<Taxi> taxies;
-	
 	public String IterativeSolving(){
 		Configuration configuration = Configuration.getConfiguration();
 		List<Ride> rides = new ArrayList<>(configuration.getRides());
-		
-		taxies = new ArrayList<>();
-		for (int i = 0; i < configuration.getVehicles(); i++) {
-			taxies.add(new Taxi());
-		}
+
+		final ArrayList<Taxi> taxis = new ArrayList<>();
+		for (int i = 0; i < configuration.getVehicles(); i++) { taxis.add(new Taxi()); }
 
 		for(int i = 0; i < configuration.getSteps(); i++){
 			int currStep = i;
-			for(Taxi t : taxies) {
+			for(Taxi t : taxis) {
 				if(t.getStepsUntilRideDone() == 0) {
 					t.setCurrentPosition(t.getTarget());
 				}
@@ -31,11 +26,10 @@ public class TaxiSolver {
 				}
 			}
 			
-			if(rides.isEmpty()) {
-				break;
-			}
+			if(rides.isEmpty()) break;
+
 			
-			taxies.stream().filter(e -> e.IsBusy() == false).forEach(t->{
+			taxis.stream().filter(e -> !e.IsBusy()).forEach(t->{
 				Ride chosenRide = ChooseNextRide(t, rides, currStep);
 				t.setNextTarget( chosenRide );
 				
@@ -43,9 +37,7 @@ public class TaxiSolver {
 		}
 		
 		StringBuilder result = new StringBuilder();
-		for(Taxi taxy : taxies) {
-			result.append(taxy.toString()).append("\n");
-		}
+		for(Taxi taxi : taxis) { result.append(taxi.toString()).append("\n"); }
 		return result.toString();
 	}
 	
