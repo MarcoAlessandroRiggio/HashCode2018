@@ -8,7 +8,7 @@ import static java.util.Comparator.comparingDouble;
 
 public class TaxiSolver {
 
-	public String IterativeSolving(){
+	public String theOranAlgorithm(){
 		Configuration configuration = Configuration.getConfiguration();
 		List<Ride> rides = new ArrayList<>(configuration.getRides());
 
@@ -27,7 +27,6 @@ public class TaxiSolver {
 			}
 			
 			if(rides.isEmpty()) break;
-
 			
 			taxis.stream().filter(e -> !e.IsBusy()).forEach(t->{
 				Ride chosenRide = ChooseNextRide(t, rides, currStep);
