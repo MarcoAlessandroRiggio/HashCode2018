@@ -29,3 +29,5 @@ out/
 
 # OutPut file
 output/
+input/
+*.iml

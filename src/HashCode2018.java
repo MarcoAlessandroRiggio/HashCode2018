@@ -15,20 +15,31 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.*;
 public class HashCode2018 {
 
-	private final static String[] fileNames = new String[] { "\\output\\e_high_bonus" }
+	private final static String[] fileNames = new String[] {
+			"\\a_example",
+			"\\b_should_be_easy",
+			"\\c_no_hurry",
+			"\\d_metropolis",
+			"\\e_high_bonus"
+		};
 
 	public static void main(String[] args) {
+		System.out.println("Start");
+		for(String inputFileName : fileNames){
+			String inputFile = System.getProperty("user.dir") +  "\\input\\" + inputFileName + ".in";
+			String outputFile = System.getProperty("user.dir") + "\\output" + inputFileName + ".out";
 
-		for(String inputFile in fileNames){
-			String inputFile = System.getProperty("user.dir") + inputFile + ".in";
-			String outputFile = System.getProperty("user.dir") + inputFile + ".out";
+			System.out.println("Doing file "+inputFile);
 
-			Configuration.readConfiguration(System.getProperty("user.dir") + inputFile + ".in");
+			Configuration.readConfiguration(inputFile);
 			TaxiSolver solver = new TaxiSolver();
 			String result = solver.IterativeSolving();
-			try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(System.getProperty("user.dir") + inputFile + ".out" ))) {
+			try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputFile))) {
 				writer.write(result);
 			} catch (IOException e) { e.printStackTrace(); }
+
+			System.out.println("Done with File "+inputFile);
 		}
+		System.out.println("Finish");
 	}
 }
