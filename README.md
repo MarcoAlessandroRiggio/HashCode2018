@@ -1,4 +1,7 @@
 # HashCode2018
+
+[![Hero Supported](https://img.shields.io/badge/Support%20Level-Hero%20Supported-457387.svg)](https://en.wikipedia.org/wiki/Chewbacca)
+
 Code for Google HashCode contest.
 
 Hash Code is a team programming competition organized by Google for students and industry professionals across Europe, 
