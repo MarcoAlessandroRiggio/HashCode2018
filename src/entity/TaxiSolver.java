@@ -31,13 +31,16 @@ public class TaxiSolver {
 			//Eliminate rides that have expired!
 			List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() > currStep).collect(Collectors.toList());
 			
-			taxis.stream().filter(e -> !e.isBusy()).forEach(t->{
-				Ride chosenRide = ChooseNextRide(t, availableRides, currStep);
-				if(chosenRide != null) {
-					t.setNextTarget( chosenRide, currStep );
-					availableRides.remove(chosenRide);
-				}
-			});
+			taxis.stream()
+				.filter(e -> e.isBusy()==false)	//Only taxis that are not busy need new instructions
+				.forEach(t->{
+					Ride chosenRide = ChooseNextRide(t, availableRides, currStep);
+					if(chosenRide != null) {
+						t.setNextTarget( chosenRide, currStep );
+						availableRides.remove(chosenRide);
+					}
+				});
+
 			rides = availableRides;
 		}
 		//End of simulation
