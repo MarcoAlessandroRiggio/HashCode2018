@@ -5,14 +5,17 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static java.io.File.*;
+
 public class HashCode2018 {
 
+
 	private final static String[] fileNames = new String[] {
-			"\\a_example",
-			"\\b_should_be_easy",
-			"\\c_no_hurry",
-			"\\d_metropolis",
-			"\\e_high_bonus"
+			separator + "a_example",
+			separator + "b_should_be_easy",
+			separator + "c_no_hurry",
+			separator + "d_metropolis",
+			separator + "e_high_bonus"
 		};
 
 	public static final String Version = "_v6.3";
@@ -22,8 +25,8 @@ public class HashCode2018 {
         System.out.println("Start");
         copySourceDir();
 		for(String inputFileName : fileNames){
-			String inputFile = rootPath +  "\\input\\" + inputFileName + ".in";
-			String outputFile = rootPath + "\\output" + inputFileName + Version + ".out";
+			String inputFile = rootPath +  separator + "resources" + separator + "input" + inputFileName + ".in";
+			String outputFile = rootPath + separator + "output" + inputFileName + Version + ".out";
 
 			System.out.println("Doing file " + inputFile);
 
