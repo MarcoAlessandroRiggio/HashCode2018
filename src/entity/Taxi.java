@@ -21,7 +21,7 @@ public class Taxi {
 	}
 
 	public boolean isBusy(){
-		return waitTimeLeft > 0;
+		return etaToTarget > 0 || waitTimeLeft > 0;
 	}
 
 	public void updateStep(){

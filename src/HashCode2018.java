@@ -15,7 +15,7 @@ public class HashCode2018 {
 			"\\e_high_bonus"
 		};
 
-	public static final String Version = "_v6.2";
+	public static final String Version = "_v6.3";
     public static final String rootPath = System.getProperty("user.dir");
 
     public static void main(String[] args) {
