@@ -20,23 +20,19 @@ public class TaxiSolver {
 		for(int i = 0; i < configuration.getSteps(); i++){
 			int currStep = i;
 			for(Taxi t : taxis) {
-				if(t.getStepsUntilRideDone() == 0) {
-					t.setCurrentPosition(t.getTarget());
-				}
-				if(t.IsBusy()) {
-					t.decreaseStepsUntilRideDone();
-				}
+				t.update();
 			}
 			
 			if(rides.isEmpty()) { break; } //Let's compromise
 
 			//Eliminate rides that have expired!
-			List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() < currStep).collect(Collectors.toList());
+			List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() > currStep).collect(Collectors.toList());
 			
-			taxis.stream().filter(e -> !e.IsBusy()).forEach(t->{
+			taxis.stream().filter(e -> e.IsBusy()==false).forEach(t->{
 				Ride chosenRide = ChooseNextRide(t, availableRides, currStep);
 				if(chosenRide != null) {
-					t.setNextTarget( chosenRide );
+					t.setNextTarget( chosenRide, currStep );
+					rides.remove(chosenRide);
 				}
 			});
 		}
@@ -51,15 +47,15 @@ public class TaxiSolver {
 			newTargetRide = rides
 					.stream()
 					//Sort by score
-					.sorted(Comparator.comparingDouble(r -> getRideScore(taxi, r, currStep)))
-					//Weed out the ride that can't be made to the destination in time.
 					.filter(r -> canRideBeMadeInTime(taxi, r, currStep))
+					.sorted(Comparator.comparingDouble(r -> getRideScore(taxi, r, currStep)))
+//					.sorted((r1, r2) -> Double.compare(getRideScore(taxi, r2, currStep), getRideScore(taxi, r1, currStep)) )
+					//Weed out the ride that can't be made to the destination in time.
 					.findFirst().get();
 		}catch(NoSuchElementException exception) {
 			return null;
 		}
 
-		rides.remove(newTargetRide);
 		return newTargetRide;
 	}
 
@@ -76,10 +72,11 @@ public class TaxiSolver {
 	}
 
 	private boolean canRideBeMadeInTime(Taxi taxi, Ride r, int currStep) {
+		DebugEx.increaseCallsToCanRideBeMadeInTime();
 		int distanceToDestination = taxi.getCurrentPosition().getDistance(r.getStartPosition());
 		int etaDestination = distanceToDestination + currStep;
 		int rideBeginTime = (etaDestination < r.getStartTime()) ? r.getStartTime() : etaDestination;
-		int rideDuration = r.getStartPosition().getDistance(r.getEndPosition());
+		int rideDuration = r.getTravelDistance();
 
 		boolean result = rideBeginTime + rideDuration < Configuration.get().getSteps()
 				&&

@@ -26,7 +26,7 @@ public class Ride {
 		this.points = new ArrayList<>();
 	}
 
-	public double getTravelDistance() { return getStartPosition().getDistance(getEndPosition()); }
+	public int getTravelDistance() { return getStartPosition().getDistance(getEndPosition()); }
 	
 	public int getIndex() {
 		return index;
