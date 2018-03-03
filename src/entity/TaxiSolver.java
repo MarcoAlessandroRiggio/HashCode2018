@@ -25,13 +25,13 @@ public class TaxiSolver {
 				t.updateStep();
 			}
 
-			if (rides.isEmpty()) {break; }//Let's compromise
-			if (taxis.stream().noneMatch(t -> t.isBusy() == false)) { continue; } //If all taxies are busy, skip
+			if (rides.isEmpty()) { break; }//Let's compromise
+			if (taxis.stream().allMatch(Taxi::isBusy)) { continue; } //If all taxies are busy, skip
 
 			//Eliminate rides that have expired!
 			List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() > currStep).collect(Collectors.toList());
 			
-			taxis.stream().filter(e -> e.isBusy()==false).forEach(t->{
+			taxis.stream().filter(e -> !e.isBusy()).forEach(t->{
 				Ride chosenRide = ChooseNextRide(t, availableRides, currStep);
 				if(chosenRide != null) {
 					t.setNextTarget( chosenRide, currStep );
