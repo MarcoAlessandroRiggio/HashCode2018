@@ -24,15 +24,15 @@ public class Taxi {
 		return waitTimeLeft > 0;
 	}
 
-	public void update(){
-		if(target != currentPosition) {
-			etaToTarget--;
-			if(etaToTarget == 0) {
-				currentPosition = target;
-			}
-		} else {
-			waitTimeLeft--;
-		}
+	public void updateStep(){
+        if(etaToTarget > 0) {
+            etaToTarget--;
+            if(etaToTarget == 0) {
+                currentPosition = target;
+            }
+        } else if(waitTimeLeft > 0 ){
+            waitTimeLeft--;
+        }
 	}
 
 	public void setNextTarget(Ride ride, int currTime) {

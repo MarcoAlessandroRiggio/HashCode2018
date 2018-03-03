@@ -3,9 +3,7 @@ package entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingDouble;
 
@@ -24,7 +22,7 @@ public class TaxiSolver {
 			int currStep = i;
 			System.out.println("Simulation at "+currStep+"/"+Configuration.get().getSteps());
 			for(Taxi t : taxis) {
-				t.update();
+				t.updateStep();
 			}
 
 			if (rides.isEmpty()) {break; }//Let's compromise
@@ -84,8 +82,10 @@ public class TaxiSolver {
 		int rideBeginTime = (etaDestination < r.getStartTime()) ? r.getStartTime() : etaDestination;
 		int rideDuration = r.getTravelDistance();
 
-		return rideBeginTime + rideDuration < Configuration.get().getSteps()
-				&& rideBeginTime + rideDuration <= r.getEndTime();
+		int rideEndEta = rideBeginTime + rideDuration;
+
+		return rideEndEta <= Configuration.get().getSteps()
+				&& rideEndEta <= r.getEndTime();
 		}
 
 	private String generateFormattedResult(List<Taxi> taxis) {

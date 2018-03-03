@@ -1,8 +1,7 @@
 import entity.Configuration;
 import entity.TaxiSolver;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -16,11 +15,12 @@ public class HashCode2018 {
 			"\\e_high_bonus"
 		};
 
-	public static final String Version = "_v5";
+	public static final String Version = "_v6.2";
+    public static final String rootPath = System.getProperty("user.dir");
 
-	public static void main(String[] args) {
-		System.out.println("Start");
-		String rootPath = System.getProperty("user.dir");
+    public static void main(String[] args) {
+        System.out.println("Start");
+        copySourceDir();
 		for(String inputFileName : fileNames){
 			String inputFile = rootPath +  "\\input\\" + inputFileName + ".in";
 			String outputFile = rootPath + "\\output" + inputFileName + Version + ".out";
@@ -40,4 +40,71 @@ public class HashCode2018 {
 		}
 		System.out.println("Finish");
 	}
+
+	public static void copySourceDir(){
+	    String sourceDir = rootPath+"\\src\\entity";
+	    String destDir = rootPath+"\\output\\source"+Version;
+        new File(destDir).mkdirs();
+	    copyFolder(new File(sourceDir), new File(destDir));
+    }
+
+    public static void copyFolder(File source, File destination)
+    {
+        if (source.isDirectory())
+        {
+            if (!destination.exists())
+            {
+                destination.mkdirs();
+            }
+
+            String files[] = source.list();
+
+            for (String file : files)
+            {
+                File srcFile = new File(source, file);
+                File destFile = new File(destination, file);
+
+                copyFolder(srcFile, destFile);
+            }
+        }
+        else
+        {
+            InputStream in = null;
+            OutputStream out = null;
+
+            try
+            {
+                in = new FileInputStream(source);
+                out = new FileOutputStream(destination);
+
+                byte[] buffer = new byte[1024];
+
+                int length;
+                while ((length = in.read(buffer)) > 0)
+                {
+                    out.write(buffer, 0, length);
+                }
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    in.close();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+
+                try
+                {
+                    out.close();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
 }
