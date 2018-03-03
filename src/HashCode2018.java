@@ -13,12 +13,12 @@ public class HashCode2018 {
 	private final static String[] fileNames = new String[] {
 			separator + "a_example",
 			separator + "b_should_be_easy",
-			separator + "c_no_hurry",
-			separator + "d_metropolis",
-			separator + "e_high_bonus"
+//			separator + "c_no_hurry",
+//			separator + "d_metropolis",
+//			separator + "e_high_bonus"
 		};
 
-	public static final String Version = "_v6.3";
+	public static final String Version = "_v6.5";
     public static final String rootPath = System.getProperty("user.dir");
 
     public static void main(String[] args) {

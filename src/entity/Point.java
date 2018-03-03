@@ -17,4 +17,9 @@ public class Point {
 	public int getDistance(Point p) {
 		return Math.abs(x - p.getX()) + Math.abs(y - p.getY());
 	}
+
+	@Override
+	public String toString() {
+		return "("+x+" "+y+")";
+	}
 }

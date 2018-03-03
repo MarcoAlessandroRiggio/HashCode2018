@@ -20,17 +20,15 @@ public class TaxiSolver {
 		//Start of simulation
 		for (int i = 0; i < configuration.getSteps(); i++) {
 			int currStep = i;
-			System.out.println("Simulation at "+currStep+"/"+Configuration.get().getSteps());
-			for(Taxi t : taxis) {
-				t.updateStep();
-			}
+
 
 			if (rides.isEmpty()) { break; }//Let's compromise
 			if (taxis.stream().allMatch(Taxi::isBusy)) { continue; } //If all taxies are busy, skip
 
 			//Eliminate rides that have expired!
-			List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() > currStep).collect(Collectors.toList());
-			
+			rides = rides.stream().filter(r -> r.getEndTime() > currStep).collect(Collectors.toList());
+			List<Ride> availableRides = rides;	//Can't use rides inside the stream.
+
 			taxis.stream()
 				.filter(e -> e.isBusy()==false)	//Only taxis that are not busy need new instructions
 				.forEach(t->{
@@ -41,7 +39,12 @@ public class TaxiSolver {
 					}
 				});
 
-			rides = availableRides;
+			rides = availableRides; //availableRides doesn't have the rides we have just assigned
+
+			System.out.println("Simulation at "+currStep+"/"+Configuration.get().getSteps());
+			for(Taxi t : taxis) {
+				t.updateStep();
+			}
 		}
 		//End of simulation
 
@@ -80,15 +83,15 @@ public class TaxiSolver {
 
 	private boolean canRideBeMadeInTime(Taxi taxi, Ride r, int currStep) {
 		//DebugEx.increaseCallsToCanRideBeMadeInTime();
-		int distanceToDestination = taxi.getCurrentPosition().getDistance(r.getStartPosition());
-		int etaDestination = distanceToDestination + currStep;
-		int rideBeginTime = (etaDestination < r.getStartTime()) ? r.getStartTime() : etaDestination;
+		int distanceToRideStart = taxi.getCurrentPosition().getDistance(r.getStartPosition());
+		int etaToRideStart = distanceToRideStart + currStep;
+		int rideStartTime = (etaToRideStart < r.getStartTime()) ? r.getStartTime() : etaToRideStart;
 		int rideDuration = r.getTravelDistance();
 
-		int rideEndEta = rideBeginTime + rideDuration;
+		int etaToRideEnd = rideStartTime + rideDuration;
 
-		return rideEndEta <= Configuration.get().getSteps()
-				&& rideEndEta <= r.getEndTime();
+		return etaToRideEnd <= Configuration.get().getSteps()
+				&& etaToRideEnd <= r.getEndTime();
 		}
 
 	private String generateFormattedResult(List<Taxi> taxis) {

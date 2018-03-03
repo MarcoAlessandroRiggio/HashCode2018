@@ -6,7 +6,7 @@ public class Taxi {
 
 	private Point target;
 	private Point currentPosition;
-	private int etaToTarget;
+	private int distanceToTarget;
 	private int id;
 	private String myRides;
 	private int noOfRides;
@@ -21,13 +21,13 @@ public class Taxi {
 	}
 
 	public boolean isBusy(){
-		return etaToTarget > 0 || waitTimeLeft > 0;
+		return distanceToTarget > 0 || waitTimeLeft > 0;
 	}
 
 	public void updateStep(){
-        if(etaToTarget > 0) {
-            etaToTarget--;
-            if(etaToTarget == 0) {
+        if(distanceToTarget > 0) {
+            distanceToTarget--;
+            if(distanceToTarget == 0) {
                 currentPosition = target;
             }
         } else if(waitTimeLeft > 0 ){
@@ -36,11 +36,14 @@ public class Taxi {
 	}
 
 	public void setNextTarget(Ride ride, int currTime) {
+		assert currentPosition == target;
+		assert distanceToTarget == 0;
+
 		this.target = ride.getStartPosition();
 		this.myRides += " " + ride.getIndex();
-		this.etaToTarget = currentPosition.getDistance(target);
+		this.distanceToTarget = currentPosition.getDistance(target) + 1;
 		this.noOfRides++;
-		this.waitTimeLeft = ride.getStartTime() - currTime - etaToTarget;
+		this.waitTimeLeft = ride.getStartTime() - currTime - distanceToTarget;
 	}
 	
 	@Override
@@ -48,7 +51,7 @@ public class Taxi {
 
 	public Point getCurrentPosition() { return currentPosition; }
 
-	public int getEtaToTarget() { return etaToTarget; }
+	public int getEtaToTarget() { return distanceToTarget; }
 
 	public Point getTarget() { return target; }
 
