@@ -1,40 +1,46 @@
 package entity;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Comparator.comparingDouble;
 
 
 public class TaxiSolver {
 
-	public String theOranAlgorithm(){
-		Configuration configuration = Configuration.get();
+	public String theOranAlgorithm() {
+		final Configuration configuration = Configuration.get();
 		List<Ride> rides = new ArrayList<>(configuration.getRides());
 
 		final ArrayList<Taxi> taxis = new ArrayList<>();
-		for (int i = 0; i < configuration.getVehicles(); i++) { taxis.add(new Taxi()); }
+		for (int i = 0; i < configuration.getVehicles(); i++) taxis.add(new Taxi());
 
 		//Start of simulation
-		for(int i = 0; i < configuration.getSteps(); i++){
+		for (int i = 0; i < configuration.getSteps(); i++) {
 			int currStep = i;
+			System.out.println("Simulation at "+currStep+"/"+Configuration.get().getSteps());
 			for(Taxi t : taxis) {
 				t.update();
 			}
-			
-			if(rides.isEmpty()) { break; } //Let's compromise
+
+			if (rides.isEmpty()) {break; }//Let's compromise
+			if (taxis.stream().noneMatch(t -> t.isBusy() == false)) { continue; } //If all taxies are busy, skip
 
 			//Eliminate rides that have expired!
 			List<Ride> availableRides = rides.stream().filter(r -> r.getEndTime() > currStep).collect(Collectors.toList());
 			
-			taxis.stream().filter(e -> e.IsBusy()==false).forEach(t->{
+			taxis.stream().filter(e -> e.isBusy()==false).forEach(t->{
 				Ride chosenRide = ChooseNextRide(t, availableRides, currStep);
 				if(chosenRide != null) {
 					t.setNextTarget( chosenRide, currStep );
-					rides.remove(chosenRide);
+					availableRides.remove(chosenRide);
 				}
 			});
+			rides = availableRides;
 		}
 		//End of simulation
 
@@ -46,15 +52,12 @@ public class TaxiSolver {
 		try {
 			newTargetRide = rides
 					.stream()
-					//Sort by score
+			//Sort by score
+					.sorted(comparingDouble(r -> getRideScore(taxi, r, currStep)))
+			//Weed out the ride that can't be made to the destination in time.
 					.filter(r -> canRideBeMadeInTime(taxi, r, currStep))
-					.sorted(Comparator.comparingDouble(r -> getRideScore(taxi, r, currStep)))
-//					.sorted((r1, r2) -> Double.compare(getRideScore(taxi, r2, currStep), getRideScore(taxi, r1, currStep)) )
-					//Weed out the ride that can't be made to the destination in time.
 					.findFirst().get();
-		}catch(NoSuchElementException exception) {
-			return null;
-		}
+		} catch (NoSuchElementException exception) { return null; }
 
 		return newTargetRide;
 	}
@@ -62,32 +65,32 @@ public class TaxiSolver {
 	private double getRideScore(Taxi taxi, Ride ride, int currStep) {
 		double result = 0;
 		int distanceToRideStart = taxi.getCurrentPosition().getDistance(ride.getStartPosition());
-		if(currStep + distanceToRideStart < ride.getStartTime()) {
+		if (currStep + distanceToRideStart < ride.getStartTime()) {
 			//We can get the bonus
 			result += Configuration.get().getBonus();
 		}
 		result += ride.getTravelDistance();
-		result -= distanceToRideStart;
+		result += distanceToRideStart;
+
+		int timeNeededToCompleteRide = ride.getTravelDistance() + distanceToRideStart;
+		result = result / timeNeededToCompleteRide;
 		return result;
 	}
 
 	private boolean canRideBeMadeInTime(Taxi taxi, Ride r, int currStep) {
-		DebugEx.increaseCallsToCanRideBeMadeInTime();
+		//DebugEx.increaseCallsToCanRideBeMadeInTime();
 		int distanceToDestination = taxi.getCurrentPosition().getDistance(r.getStartPosition());
 		int etaDestination = distanceToDestination + currStep;
 		int rideBeginTime = (etaDestination < r.getStartTime()) ? r.getStartTime() : etaDestination;
 		int rideDuration = r.getTravelDistance();
 
-		boolean result = rideBeginTime + rideDuration < Configuration.get().getSteps()
-				&&
-				rideBeginTime + rideDuration <= r.getEndTime();
+		return rideBeginTime + rideDuration < Configuration.get().getSteps()
+				&& rideBeginTime + rideDuration <= r.getEndTime();
+		}
 
-		return result;
-	}
-
-	private String generateFormattedResult(List<Taxi> taxis){
+	private String generateFormattedResult(List<Taxi> taxis) {
 		StringBuilder result = new StringBuilder();
-		for(Taxi taxi : taxis) {
+		for (Taxi taxi : taxis) {
 			result.append(taxi.toString()).append("\n");
 		}
 		return result.toString();

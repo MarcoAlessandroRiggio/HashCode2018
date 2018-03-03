@@ -20,7 +20,7 @@ public class Taxi {
 		this.noOfRides = 0;
 	}
 
-	public boolean IsBusy(){
+	public boolean isBusy(){
 		return waitTimeLeft > 0;
 	}
 
